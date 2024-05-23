@@ -78,6 +78,7 @@ const createProduct = async (req, res) => {
     res.status(201).json(createdProduct);
   } catch (error) {
     console.log(error)
+    console.log(error)
     res.status(400).json({ message: "Product creation failed", error });
   }
 };
