@@ -1,7 +1,6 @@
 const multer = require("multer");
 const path = require("path");
 
-// Fayllarni qayerga va qanday saqlash
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -14,7 +13,6 @@ const storage = multer.diskStorage({
   },
 });
 
-// Fayl yuklashni filtr qilish (faqat rasm fayllari)
 const fileFilter = (req, file, cb) => {
   const fileTypes = /jpeg|jpg|png|gif/;
   const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
@@ -23,7 +21,7 @@ const fileFilter = (req, file, cb) => {
   if (mimeType && extname) {
     return cb(null, true);
   } else {
-    cb("Error: Images Only!");
+    cb(error, message, null);
   }
 };
 

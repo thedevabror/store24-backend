@@ -3,6 +3,7 @@ const User = require("../models/userModel");
 const Order = require("../models/orderModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
 const path = require("path");
 
 const registerAdmin = async (req, res) => {
@@ -17,7 +18,12 @@ const registerAdmin = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = await User.create({ name, email, password: hashedPassword, isAdmin: true });
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      isAdmin: true,
+    });
     res.status(201).json({
       _id: user._id,
       name: user.name,
@@ -62,7 +68,7 @@ const createProduct = async (req, res) => {
   try {
     const { name, description, price, countInStock, category, brand } =
       req.body;
-      const images = req.files ? req.files.map((file) => file.path) : []; // Yuklangan fayl nomini olish
+    const images = req.files ? req.files.map((file) => file.path) : []; // Yuklangan fayl nomini olish
 
     const product = new Product({
       name,
@@ -77,8 +83,8 @@ const createProduct = async (req, res) => {
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
   } catch (error) {
-    console.log(error)
-    console.log(error)
+    console.log(error);
+    console.log(error);
     res.status(400).json({ message: "Product creation failed", error });
   }
 };
@@ -132,16 +138,30 @@ const updateProduct = async (req, res) => {
 
 // Delete product
 const deleteProduct = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const product = await Product.findById(req.params.id);
-    if (product) {
-      await product.remove();
-      res.json({ message: "Product removed" });
-    } else {
-      res.status(404).json({ message: "Product not found" });
+    const product = await Product.findByIdAndDelete(id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
     }
+    product.images.forEach((image) => {
+      const filePath = path.join(
+        __dirname,
+        "..",
+        image.replace("uploads/", "")
+      );
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error(`Failed to delete image file: ${filePath}`, err);
+        } else {
+          console.log(`Successfully deleted image file: ${filePath}`);
+        }
+      });
+    });
+    res.status(200).json({ message: "Product deleted" });
   } catch (error) {
-    res.status(500).json({ message: "Product deletion failed", error });
+    res.status(500).json({ message: "Server error", error });
   }
 };
 

@@ -1,6 +1,4 @@
 const express = require("express");
-const multer = require("multer");
-const path = require("path");
 const {
   createProduct,
   updateProduct,
@@ -14,24 +12,34 @@ const {
   blockUnBlockUser,
 } = require("../controllers/adminController");
 const { protect, admin } = require("../middleware/authMiddleware");
-
-const router = express.Router();
+const multer = require("multer");
+const path = require("path");
 
 const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, "images/"); // Fayllarni saqlash joyi
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
   },
-  filename(req, file, cb) {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-    ); // Fayl nomi
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
 
-const upload = multer({ storage });
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Not an image! Please upload an image."), false);
+  }
+};
 
-router.post("/products", upload.single("image"), createProduct);
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+}).array("images", 10);
+
+const router = express.Router();
+
+router.post("/products", upload, createProduct);
 
 router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
