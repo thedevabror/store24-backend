@@ -20,10 +20,10 @@ jobs:
       with:
         host: ${{ env.SERVER_HOST }}
         username: ${{ env.SERVER_USERNAME }}
-        password: ${{ env.SSH_PRIVATE_PASSWORD }}
+        password: "n9R.VDHJrAa-#r"
+        # password: ${{ env.SSH_PRIVATE_PASSWORD }}
         script: |
           cd ~/store24-backend/
           git pull
           npm install
           pm2 restart store24-backend
-          
