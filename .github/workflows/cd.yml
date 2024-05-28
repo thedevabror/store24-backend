@@ -1,0 +1,29 @@
+name: Test CD
+
+on:
+  push:
+    branches: [ master ]
+
+env:
+  SERVER_HOST: 82.97.243.139
+  SERVER_USERNAME: root
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_PASSWORD }}
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Connect to server and deploy changes
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.SERVER_HOST }}
+        username: ${{ env.SERVER_USERNAME }}
+        # password: ${{ env.SSH_PRIVATE_PASSWORD }}
+        password: "n9R.VDHJrAa-#r"
+        script: |
+          cd ~/store24-backend/
+          git pull
+          npm install
+          pm2 restart store24-backend
