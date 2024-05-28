@@ -26,3 +26,4 @@ jobs:
           git pull
           npm install
           pm2 restart store24-backend
+          
