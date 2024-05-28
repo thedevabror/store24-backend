@@ -18,7 +18,7 @@ const app = express();
 app.use(cors())
 app.use(bodyParser.json());
 // app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/public", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/users", userRoutes);
 app.use("/api/categories", categoryRoutes);
