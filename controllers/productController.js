@@ -20,7 +20,7 @@ const createProduct = async (req, res) => {
     const savedProduct = await newProduct.save();
     res.status(201).json(savedProduct);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ message: "Server error", error });
   }
 };
@@ -38,10 +38,19 @@ const updateProduct = async (req, res) => {
       attributes,
       brand,
     } = req.body;
-
+    const parsedAttributes = JSON.parse(attributes);
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
-      { name, description, price, images, category, color, attributes, brand },
+      {
+        name,
+        description,
+        price,
+        images,
+        category,
+        color,
+        attributes: parsedAttributes,
+        brand,
+      },
       { new: true }
     );
 
