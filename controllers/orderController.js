@@ -21,7 +21,9 @@ const createOrder = async (req, res) => {
       if (product) {
         totalPrice += item.quantity * product.price;
       } else {
-        return res.status(404).json({ message: `Product with ID ${item.productId} not found` });
+        return res
+          .status(404)
+          .json({ message: `Product with ID ${item.productId} not found` });
       }
     }
 
@@ -65,7 +67,7 @@ const getOrderById = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    console.log('Populated order:', order);
+    console.log("Populated order:", order);
 
     res.status(200).json(order);
   } catch (error) {
@@ -112,10 +114,30 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+const deleteOrder = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    await order.remove();
+
+    res.status(200).json({ message: "Order deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
 module.exports = {
   createOrder,
   getOrderById,
   getUserOrders,
   updateOrderStatus,
   getAllOrders,
+  deleteOrder,
 };

@@ -5,6 +5,7 @@ const {
   updateOrderStatus,
   getAllOrders,
   getOrderById,
+  deleteOrder,
 } = require("../controllers/orderController");
 const { protect, admin } = require("../middleware/authMiddleware");
 const router = express.Router();
@@ -23,5 +24,8 @@ router.get("/", protect, admin, getAllOrders);
 
 // Admin updates order status
 router.put("/update-order-status", protect, admin, updateOrderStatus);
+
+// Admin deletes an order
+router.delete("/:orderId", protect, admin, deleteOrder); // Add the new delete route
 
 module.exports = router;
