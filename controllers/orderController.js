@@ -55,6 +55,22 @@ const getAllOrders = async (req, res) => {
   }
 };
 
+const getOrderById = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+
+    const order = await Order.findById(orderId).populate("products.productId");
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.status(200).json(order);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
 const getUserOrders = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -96,6 +112,7 @@ const updateOrderStatus = async (req, res) => {
 
 module.exports = {
   createOrder,
+  getOrderById,
   getUserOrders,
   updateOrderStatus,
   getAllOrders,
