@@ -27,18 +27,16 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    const productId = req.params.productId;
-    const {
-      name,
-      description,
-      price,
-      images,
-      category,
-      color,
-      attributes,
-      brand,
-    } = req.body;
+    const productId = req.params.id;
+    const { name, description, price, category, color, attributes, brand } =
+      req.body;
+
+    // Parse attributes if they are sent as a JSON string
     const parsedAttributes = JSON.parse(attributes);
+
+    // Handle file uploads
+    const images = req.files.map((file) => file.filename);
+
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
       {
