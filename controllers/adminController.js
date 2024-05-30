@@ -76,6 +76,8 @@ const createProduct = async (req, res) => {
       color,
       attributes,
     } = req.body;
+
+    const parsedAttributes = JSON.parse(attributes);
     const images = req.files ? req.files.map((file) => file.path) : []; // Yuklangan fayl nomini olish
 
     const product = new Product({
@@ -87,7 +89,7 @@ const createProduct = async (req, res) => {
       category,
       brand,
       color,
-      attributes,
+      attributes: parsedAttributes,
     });
 
     const createdProduct = await product.save();
