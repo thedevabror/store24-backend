@@ -66,8 +66,16 @@ const loginAdmin = async (req, res) => {
 // Create a new product
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, countInStock, category, brand } =
-      req.body;
+    const {
+      name,
+      description,
+      price,
+      countInStock,
+      category,
+      brand,
+      color,
+      attributes,
+    } = req.body;
     const images = req.files ? req.files.map((file) => file.path) : []; // Yuklangan fayl nomini olish
 
     const product = new Product({
@@ -78,6 +86,8 @@ const createProduct = async (req, res) => {
       images, // Rasm manzilini saqlash
       category,
       brand,
+      color,
+      attributes,
     });
 
     const createdProduct = await product.save();
