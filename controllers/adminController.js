@@ -126,23 +126,47 @@ const getProductById = async (req, res) => {
 // Update product
 const updateProduct = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
-    if (product) {
-      product.name = req.body.name || product.name;
-      product.description = req.body.description || product.description;
-      product.price = req.body.price || product.price;
-      product.countInStock = req.body.countInStock || product.countInStock;
-      product.image = req.body.image || product.image;
-      product.category = req.body.category || product.category;
-      product.brand = req.body.brand || product.brand;
+    const productId = req.params.id;
+    const {
+      name,
+      description,
+      price,
+      countInStock,
+      category,
+      brand,
+      color,
+      attributes,
+    } = req.body;
 
-      const updatedProduct = await product.save();
-      res.json(updatedProduct);
-    } else {
-      res.status(404).json({ message: "Product not found" });
+    // Parse attributes if they are sent as a JSON string
+    const parsedAttributes = JSON.parse(attributes);
+
+    // Handle file uploads
+    const images = req.files ? req.files.map((file) => file.path) : [];
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      {
+        name,
+        description,
+        price,
+        countInStock,
+        images: images.length > 0 ? images : undefined, // Only update if new images are provided
+        category,
+        brand,
+        color,
+        attributes: parsedAttributes,
+      },
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found" });
     }
+
+    res.status(200).json(updatedProduct);
   } catch (error) {
-    res.status(500).json({ message: "Product update failed", error });
+    res.status(500).json({ message: "Server error", error });
   }
 };
 

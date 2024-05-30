@@ -39,7 +39,7 @@ const upload = multer({
 
 const router = express.Router();
 
-router.post("/products", upload, createProduct);
+router.post("/products", protect, admin, upload, createProduct);
 
 router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
@@ -50,7 +50,7 @@ router.route("/products").get(protect, admin, getProducts);
 router
   .route("/products/:id")
   .get(protect, admin, getProductById)
-  .put(protect, admin, updateProduct)
+  .put(protect, admin, upload, updateProduct)
   .delete(protect, admin, deleteProduct);
 
 router.get("/top-selling-products", protect, admin, getTopSellingProducts);
