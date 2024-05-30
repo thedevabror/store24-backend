@@ -15,12 +15,11 @@ const createOrder = async (req, res) => {
       return res.status(400).json({ message: "Cart is empty" });
     }
 
-    // Savatdagi har bir mahsulotning narxini olamiz
     let totalPrice = 0;
     for (let item of user.cart) {
       const product = await Product.findById(item.productId);
       if (product) {
-        totalPrice += item.quantity * product.price; // Assuming price is a field in the Product model
+        totalPrice += item.quantity * product.price;
       } else {
         return res
           .status(404)
@@ -36,12 +35,12 @@ const createOrder = async (req, res) => {
 
     await order.save();
 
-    // Foydalanuvchining savatini tozalash
     user.cart = [];
     await user.save();
 
     res.status(201).json({ message: "Order created successfully", order });
   } catch (error) {
+    console.error("Error creating order:", error);
     res.status(500).json({ message: "Server error", error });
   }
 };
@@ -51,6 +50,7 @@ const getAllOrders = async (req, res) => {
     const orders = await Order.find();
     res.status(200).json(orders);
   } catch (error) {
+    console.error("Error fetching orders:", error);
     res.status(500).json({ message: "Server error", error });
   }
 };
@@ -59,14 +59,19 @@ const getOrderById = async (req, res) => {
   try {
     const orderId = req.params.orderId;
 
+    console.log(`Fetching order with ID: ${orderId}`);
+
     const order = await Order.findById(orderId).populate("products.productId");
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
 
+    console.log("Populated order:", order);
+
     res.status(200).json(order);
   } catch (error) {
+    console.error("Error fetching order by ID:", error);
     res.status(500).json({ message: "Server error", error });
   }
 };
@@ -75,16 +80,15 @@ const getUserOrders = async (req, res) => {
   try {
     const userId = req.params.userId;
 
-    const orders = await Order.find({ userId: userId }).populate(
-      "products.productId"
-    );
+    const orders = await Order.find({ userId }).populate("products.productId");
 
-    if (!orders.length) {
+    if (orders.length === 0) {
       return res.status(404).json({ message: "No orders found for this user" });
     }
 
     res.status(200).json(orders);
   } catch (error) {
+    console.error("Error fetching user orders:", error);
     res.status(500).json({ message: "Server error", error });
   }
 };

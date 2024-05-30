@@ -46,7 +46,7 @@ const productSchema = new mongoose.Schema({
 });
 
 productSchema.virtual("imageUrls").get(function () {
-  return this.images.map((image) => `${process.env.BASE_URL}/uploads/${image}`);
+  return this.images.map((image) => `${process.env.BASE_URL}/public/${image}`);
 });
 
 module.exports = mongoose.model("Product", productSchema);
