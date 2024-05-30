@@ -24,7 +24,7 @@ const productSchema = new mongoose.Schema({
   ],
   color: {
     type: String,
-    required: false, // O'rnatishingiz mumkin agar har doim bo'lishi kerak bo'lsa
+    required: true, // O'rnatishingiz mumkin agar har doim bo'lishi kerak bo'lsa
   },
   attributes: [
     {
