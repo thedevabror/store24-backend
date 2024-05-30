@@ -21,9 +21,7 @@ const createOrder = async (req, res) => {
       if (product) {
         totalPrice += item.quantity * product.price;
       } else {
-        return res
-          .status(404)
-          .json({ message: `Product with ID ${item.productId} not found` });
+        return res.status(404).json({ message: `Product with ID ${item.productId} not found` });
       }
     }
 
@@ -67,7 +65,7 @@ const getOrderById = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    console.log("Populated order:", order);
+    console.log('Populated order:', order);
 
     res.status(200).json(order);
   } catch (error) {
