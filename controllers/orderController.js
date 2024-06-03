@@ -20,6 +20,7 @@ const createOrder = async (req, res) => {
       const product = await Product.findById(item.productId);
       if (product) {
         totalPrice += item.quantity * product.price;
+        product.soldCount += item.quantity;
       } else {
         return res
           .status(404)

@@ -43,6 +43,10 @@ const productSchema = new mongoose.Schema({
     ref: "Brand",
     required: true,
   },
+  soldCount: {
+    type: Number,
+    default: 0,
+  },
 });
 
 productSchema.virtual("imageUrls").get(function () {
