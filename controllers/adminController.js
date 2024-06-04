@@ -65,39 +65,81 @@ const loginAdmin = async (req, res) => {
 
 // Create a new product
 const createProduct = async (req, res) => {
+  const {
+    name,
+    description,
+    price,
+    category,
+    color,
+    attributes,
+    brand,
+    stock,
+  } = req.body;
+  const images = req.files ? req.files.map((file) => file.path) : [];
   try {
+    const newProduct = new Product({
+      name,
+      description,
+      price,
+      images,
+      category,
+      color,
+      attributes,
+      brand,
+      stock,
+    });
+
+    const savedProduct = await newProduct.save();
+    res.status(201).json(savedProduct);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+const updateProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
     const {
       name,
       description,
       price,
-      countInStock,
       category,
-      brand,
       color,
       attributes,
+      brand,
+      stock,
     } = req.body;
 
+    // Parse attributes if they are sent as a JSON string
     const parsedAttributes = JSON.parse(attributes);
-    const images = req.files ? req.files.map((file) => file.path) : []; // Yuklangan fayl nomini olish
 
-    const product = new Product({
-      name,
-      description,
-      price,
-      countInStock,
-      images, // Rasm manzilini saqlash
-      category,
-      brand,
-      color,
-      attributes: parsedAttributes,
-    });
+    // Handle file uploads
+    const images = req.files.map((file) => file.filename);
 
-    const createdProduct = await product.save();
-    res.status(201).json(createdProduct);
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      {
+        name,
+        description,
+        price,
+        images,
+        category,
+        color,
+        attributes: parsedAttributes,
+        brand,
+        stock,
+      },
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json(updatedProduct);
   } catch (error) {
-    console.log(error);
-    console.log(error);
-    res.status(400).json({ message: "Product creation failed", error });
+    res.status(500).json({ message: "Server error", error });
   }
 };
 
@@ -126,51 +168,51 @@ const getProductById = async (req, res) => {
 };
 
 // Update product
-const updateProduct = async (req, res) => {
-  try {
-    const productId = req.params.id;
-    const {
-      name,
-      description,
-      price,
-      countInStock,
-      category,
-      brand,
-      color,
-      attributes,
-    } = req.body;
+// const updateProduct = async (req, res) => {
+//   try {
+//     const productId = req.params.id;
+//     const {
+//       name,
+//       description,
+//       price,
+//       countInStock,
+//       category,
+//       brand,
+//       color,
+//       attributes,
+//     } = req.body;
 
-    // Parse attributes if they are sent as a JSON string
-    const parsedAttributes = JSON.parse(attributes);
+//     // Parse attributes if they are sent as a JSON string
+//     const parsedAttributes = JSON.parse(attributes);
 
-    // Handle file uploads
-    const images = req.files ? req.files.map((file) => file.path) : [];
+//     // Handle file uploads
+//     const images = req.files ? req.files.map((file) => file.path) : [];
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      productId,
-      {
-        name,
-        description,
-        price,
-        countInStock,
-        images: images.length > 0 ? images : undefined, // Only update if new images are provided
-        category,
-        brand,
-        color,
-        attributes: parsedAttributes,
-      },
-      { new: true }
-    );
+//     const updatedProduct = await Product.findByIdAndUpdate(
+//       productId,
+//       {
+//         name,
+//         description,
+//         price,
+//         countInStock,
+//         images: images.length > 0 ? images : undefined, // Only update if new images are provided
+//         category,
+//         brand,
+//         color,
+//         attributes: parsedAttributes,
+//       },
+//       { new: true }
+//     );
 
-    if (!updatedProduct) {
-      return res.status(404).json({ message: "Product not found" });
-    }
+//     if (!updatedProduct) {
+//       return res.status(404).json({ message: "Product not found" });
+//     }
 
-    res.status(200).json(updatedProduct);
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
-  }
-};
+//     res.status(200).json(updatedProduct);
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error", error });
+//   }
+// };
 
 // Delete product
 const deleteProduct = async (req, res) => {
