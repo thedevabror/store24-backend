@@ -132,6 +132,62 @@ const deleteOrder = async (req, res) => {
   }
 };
 
+const getMonthlySales = async (req, res) => {
+  try {
+    // Hozirgi vaqt
+    const now = new Date();
+    // Hozirgi oydagi birinchi kun
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    // Ushbu oydagi barcha buyurtmalarni yig'ish
+    const orders = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: firstDayOfMonth },
+        },
+      },
+      {
+        $unwind: "$products",
+      },
+      {
+        $group: {
+          _id: "$products.productId",
+          totalSold: { $sum: "$products.quantity" },
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productDetails",
+        },
+      },
+      {
+        $unwind: "$productDetails",
+      },
+      {
+        $project: {
+          _id: 1,
+          name: "$productDetails.name",
+          totalSold: 1,
+          totalLeft: {
+            $subtract: ["$productDetails.stock", "$totalSold"],
+          },
+        },
+      },
+      {
+        $sort: { totalSold: -1 },
+      },
+    ]);
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Error fetching monthly sales:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
 module.exports = {
   createOrder,
   getOrderById,
@@ -139,4 +195,5 @@ module.exports = {
   updateOrderStatus,
   getAllOrders,
   deleteOrder,
+  getMonthlySales
 };

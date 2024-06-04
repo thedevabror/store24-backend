@@ -6,6 +6,7 @@ const {
   getAllOrders,
   getOrderById,
   deleteOrder,
+  getMonthlySales,
 } = require("../controllers/orderController");
 const { protect, admin } = require("../middleware/authMiddleware");
 const router = express.Router();
@@ -26,6 +27,8 @@ router.get("/", protect, admin, getAllOrders);
 router.put("/update-order-status", protect, admin, updateOrderStatus);
 
 // Admin deletes an order
-router.delete("/:orderId", protect, admin, deleteOrder); // Add the new delete route
+router.delete("/:orderId", protect, admin, deleteOrder);
+
+router.get("/monthly-sales", protect, admin, getMonthlySales);
 
 module.exports = router;

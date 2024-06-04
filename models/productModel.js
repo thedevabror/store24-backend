@@ -47,6 +47,10 @@ const productSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  stock: {
+    type: Number,
+    required: true,
+  },
 });
 
 productSchema.virtual("imageUrls").get(function () {

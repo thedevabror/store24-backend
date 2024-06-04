@@ -2,8 +2,16 @@ const Product = require("../models/productModel");
 
 // Mahsulot yaratish
 const createProduct = async (req, res) => {
-  const { name, description, price, category, color, attributes, brand } =
-    req.body;
+  const {
+    name,
+    description,
+    price,
+    category,
+    color,
+    attributes,
+    brand,
+    stock,
+  } = req.body;
   const images = req.files ? req.files.map((file) => file.path) : [];
   try {
     const newProduct = new Product({
@@ -15,6 +23,8 @@ const createProduct = async (req, res) => {
       color,
       attributes,
       brand,
+      stock,
+      soldCount: 0,
     });
 
     const savedProduct = await newProduct.save();
@@ -28,8 +38,16 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    const { name, description, price, category, color, attributes, brand } =
-      req.body;
+    const {
+      name,
+      description,
+      price,
+      category,
+      color,
+      attributes,
+      brand,
+      stock,
+    } = req.body;
 
     // Parse attributes if they are sent as a JSON string
     const parsedAttributes = JSON.parse(attributes);
@@ -48,6 +66,7 @@ const updateProduct = async (req, res) => {
         color,
         attributes: parsedAttributes,
         brand,
+        stock,
       },
       { new: true }
     );
