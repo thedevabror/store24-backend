@@ -43,13 +43,13 @@ const productSchema = new mongoose.Schema({
     ref: "Brand",
     required: true,
   },
-  soldCount: {
-    type: Number,
-    default: 0,
-  },
   stock: {
     type: Number,
     required: true,
+  },
+  soldCount: {
+    type: Number,
+    default: 0,
   },
 });
 

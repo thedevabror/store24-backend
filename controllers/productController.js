@@ -24,7 +24,6 @@ const createProduct = async (req, res) => {
       attributes,
       brand,
       stock,
-      soldCount: 0,
     });
 
     const savedProduct = await newProduct.save();
