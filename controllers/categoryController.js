@@ -1,7 +1,6 @@
 const Category = require("../models/categoryModel.js");
 const mongoose = require('mongoose');
 
-
 // Kategoriya yaratish
 const createCategory = async (req, res) => {
   const { name, parent } = req.body;
@@ -29,6 +28,7 @@ const getCategories = async (req, res) => {
   }
 };
 
+// Kategoriya ID asosida olish
 const getCategoryById = async (req, res) => {
   try {
     const categoryId = req.params.categoryId;
@@ -49,4 +49,26 @@ const getCategoryById = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
-module.exports = { createCategory, getCategories, getCategoryById };
+
+// Kategoriya o'chirish
+const deleteCategory = async (req, res) => {
+  try {
+    const categoryId = req.params.categoryId;
+    
+    if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+      return res.status(400).json({ message: "Invalid category ID format" });
+    }
+
+    const category = await Category.findByIdAndDelete(categoryId);
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    res.status(200).json({ message: "Category deleted" });
+  } catch (error) {
+    console.error("Error deleting category:", error); // Error logging
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+module.exports = { createCategory, getCategories, getCategoryById, deleteCategory };
