@@ -10,7 +10,7 @@ const brandRoutes = require("./routes/brandRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const path = require("path");
-const visitorModel = require("./models/visitorModel");
+const Visitor = require("./models/visitorModel");
 
 dotenv.config();
 connectDB();
@@ -37,7 +37,7 @@ app.get("/api/visitors/daily", async (req, res) => {
     const endOfDay = new Date();
     endOfDay.setHours(23, 59, 59, 999);
 
-    const count = await Visitor .countDocuments({
+    const count = await Visitor.countDocuments({
       visitDate: {
         $gte: startOfDay,
         $lte: endOfDay,
