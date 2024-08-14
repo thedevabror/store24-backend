@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        p {
+            color: #555;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .endpoint {
+            background: #e7f3fe;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .method {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API Documentation</h1>
+        <p>This documentation provides an overview of the endpoints and functionality of our application.</p>
+        
+        <h2>Authentication</h2>
+        
+        <div class="endpoint">
+            <p class="method">POST /api/admin/register</p>
+            <p>Create a new admin user.</p>
+            <pre>
+{
+  "name": "Admin Name",
+  "email": "admin@example.com",
+  "password": "password"
+}</pre>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">POST /api/admin/login</p>
+            <p>Login as an admin user.</p>
+            <pre>
+{
+  "email": "admin@example.com",
+  "password": "password"
+}</pre>
+        </div>
+        
+        <h2>Products</h2>
+        
+        <div class="endpoint">
+            <p class="method">POST /api/products</p>
+            <p>Create a new product.</p>
+            <pre>
+{
+  "name": "Product Name",
+  "description": "Product Description",
+  "price": 100,
+  "countInStock": 10,
+  "category": "Category ID",
+  "brand": "Brand",
+  "color": "Color",
+  "attributes": "{\"key\":\"value\"}"
+}</pre>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">GET /api/products</p>
+            <p>Get all products.</p>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">GET /api/products/:id</p>
+            <p>Get a product by ID.</p>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">PUT /api/products/:id</p>
+            <p>Update a product by ID.</p>
+            <pre>
+{
+  "name": "Updated Product Name",
+  "description": "Updated Product Description",
+  "price": 150,
+  "countInStock": 20,
+  "category": "Category ID",
+  "brand": "Updated Brand",
+  "color": "Updated Color",
+  "attributes": "{\"key\":\"updated value\"}"
+}</pre>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">DELETE /api/products/:id</p>
+            <p>Delete a product by ID.</p>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">GET /api/products/top</p>
+            <p>Get top-selling products.</p>
+        </div>
+        
+        <h2>Orders</h2>
+        
+        <div class="endpoint">
+            <p class="method">POST /api/orders</p>
+            <p>Create a new order.</p>
+            <pre>
+{
+  "userId": "User ID",
+  "products": [
+    {
+      "productId": "Product ID",
+      "quantity": 2
+    }
+  ],
+  "totalPrice": 200
+}</pre>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">GET /api/orders</p>
+            <p>Get all orders (Admin only).</p>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">GET /api/orders/:id</p>
+            <p>Get an order by ID.</p>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">PUT /api/orders/:id</p>
+            <p>Update order status by ID.</p><pre>
+{
+  "status": "completed" // or "cancelled"
+}
+</pre>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">DELETE /api/orders/:id</p>
+            <p>Delete an order by ID.</p>
+        </div>
+        
+        <h2>Categories</h2>
+        
+        <div class="endpoint">
+            <p class="method">POST /api/categories</p>
+            <p>Create a new category.</p>
+            <pre>
+{
+  "name": "Category Name",
+  "parent": "Parent Category ID" // optional
+}
+</pre>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">GET /api/categories</p>
+            <p>Get all categories.</p>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">GET /api/categories/:id</p>
+            <p>Get a category by ID.</p>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">DELETE /api/categories/:id</p>
+            <p>Delete a category by ID.</p>
+        </div>
+
+        <h2>Cart</h2>
+        
+        <div class="endpoint">
+            <p class="method">POST /api/cart</p>
+            <p>Add a product to the cart.</p>
+            <pre>
+{
+  "userId": "User ID",
+  "productId": "Product ID",
+  "quantity": 1
+}
+</pre>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">GET /api/cart/:userId</p>
+            <p>Get the cart for a user by user ID.</p>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">DELETE /api/cart</p>
+            <p>Remove a product from the cart.</p>
+            <pre>
+{
+  "userId": "User ID",
+  "productId": "Product ID"
+}
+</pre>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">DELETE /api/cart/clear/:userId</p>
+            <p>Clear the cart for a user by user ID.</p>
+        </div>
+        
+        <h2>Users</h2>
+        
+        <div class="endpoint">
+            <p class="method">GET /api/users</p>
+            <p>Get all users (Admin only).</p>
+        </div>
+        
+        <div class="endpoint">
+            <p class="method">PUT /api/users/block/:id</p>
+            <p>Block or unblock a user by ID.</p>
+            <pre>
+{
+  "isActive": false // or true
+}
+</pre>
+        </div>
+    </div>
+</body>
+</html>
